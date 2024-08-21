@@ -1,0 +1,7 @@
+#!/usr/bin/ruby
+require 'date'
+
+now = DateTime.now.strftime('%s')
+
+
+
