@@ -1,7 +1,32 @@
 #!/usr/bin/ruby
 require 'date'
 
-now = DateTime.now.strftime('%s')
+tasks_file = "#{ENV['HOME']}/.config/simplecron/tasks"
+cache_folder = "#{ENV['HOME']}/.cache/simplecron"
 
+`mkdir -p #{cache_folder}`
 
+def time_now
+  DateTime.now.strftime('%s').to_i
+end
 
+def time_elapsed(control_file)
+  last = 0
+  last = File.read(control_file).to_i if File.file? control_file
+  time_now - last
+end
+
+task_list = File.readlines(tasks_file)
+
+task_list.each do |l|
+  job = l.split(';')
+  
+  command = job[0].strip
+  period = job[1].to_i
+  control_file = "#{cache_folder}/#{job[2].strip}"
+  
+  if time_elapsed(control_file) > period
+    File.write(control_file, time_now, mode: 'w')
+    system(command)
+  end
+end
