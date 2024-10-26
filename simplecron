@@ -8,7 +8,7 @@ config_folder = "#{home}/.config/simplecron"
 `mkdir -p #{cache_folder} #{config_folder}`
 
 config_file = "#{config_folder}/config"
-logfile = "#{home}/.simplecron.log"
+logfile = "#{cache_folder}/log.log"
 
 line = '=' * 40 
 
@@ -45,10 +45,12 @@ def time_now
   DateTime.now.strftime('%s').to_i
 end
 
-def time_elapsed(control_file)
-  last = 0
-  last = File.read(control_file).to_i if File.file? control_file
-  time_now - last
+def read_data(control_file)
+  time_sucess = 0
+  time_try = 0
+  fail_count = 0
+  time_sucess, time_try, fail_count = File.read(control_file).split if File.file? control_file
+  return time_sucess.to_i, time_try.to_i, fail_count.to_i
 end
 
 def convert_to_seconds(period)
@@ -60,6 +62,13 @@ end
 
 def stamp(job)
   ":: #{job.strip}\n:: #{Time.now.round(0)}\n"
+end
+
+def delay(fail_count)
+  value = 0
+  value = 10 if fail_count >= 5 and fail_count < 10
+  value = 20 if fail_count >= 10
+  return value
 end
 
 option = ARGV[0]
@@ -98,14 +107,34 @@ when 'run'
     control = job[0].strip 
 
     control_file = "#{cache_folder}/#{control}"
-    if time_elapsed(control_file) >= period
+
+    time_sucess, time_try, fail_count = read_data(control_file)
+   
+    if fail_count == 0 
+      time_next = time_sucess + period
+    else
+      time_next = time_try + delay(fail_count)
+    end
+
+
+    if time_now >= time_next
       File.write(logfile, stamp(control), mode: 'a')
       exit_code = `#{command} >> #{logfile} 2>&1; echo $?`.to_i
       File.write(logfile, line+"\n", mode: 'a')
-
-      File.write(control_file, time_now, mode: 'w') if exit_code == 0
+       
+      if exit_code == 0
+        time_stamp = "#{time_now} #{time_now}"
+        fail_count = 0
+      else
+        time_stamp = "#{time_sucess} #{time_now}"
+        fail_count += 1
+      end 
+      
+      File.write(control_file, "#{time_stamp} #{fail_count}", mode: 'w')
     end
   end
+
 else
   puts "No option for simplecron: '#{option}'"
+
 end
