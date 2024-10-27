@@ -5,22 +5,11 @@ home = ENV['HOME']
 cache_folder = "#{home}/.cache/simplecron"
 config_folder = "#{home}/.config/simplecron"
 
-`mkdir -p #{cache_folder} #{config_folder}`
+`mkdir -p #{cache_folder}`
 
 config_file = "#{config_folder}/config"
-logfile = "#{cache_folder}/log.log"
-
-line = '=' * 40 
 
 require 'date'
-
-def no_config?(config_file)
-  true unless File.file? config_file
-end
-
-def empty_config?(config_file)
-  File.read(config_file).empty?
-end
 
 def is_enabled?
   true if `crontab -l 2>/dev/null`.include? '/usr/bin/simplecron'
@@ -60,14 +49,13 @@ def convert_to_seconds(period)
   return period.delete('w').to_f * 604800 if period.include?('w')
 end
 
-def stamp(job)
-  ":: #{job.strip}\n:: #{Time.now.round(0)}\n"
+def log_stamp(job)
+  ":: #{Time.now.round(0)}\n"
 end
 
 def delay(fail_count)
-  value = 0
-  value = 10 if fail_count >= 5 and fail_count < 10
-  value = 20 if fail_count >= 10
+  value = 600
+  value = 3600 if fail_count > 6
   return value
 end
 
@@ -93,20 +81,20 @@ when 'disable'
   puts 'disabled simplecron'
 
 when 'run'
-  exit 0 if no_config?(config_file)
-  exit 0 if empty_config?(config_file)
+  exit 0 unless File.file? config_file
   
   task_list = File.readlines(config_file)
   task_list.reject! { |l| l.include?('#') }
   
   task_list.each do |l|
-    job = l.split(';')
+    job = l.split(',')
     
     command = job[2].strip
     period = convert_to_seconds(job[1])
     control = job[0].strip 
 
-    control_file = "#{cache_folder}/#{control}"
+    control_file = "#{cache_folder}/#{control}.rec"
+    log_file = "#{cache_folder}/#{control}.log"
 
     time_sucess, time_try, fail_count = read_data(control_file)
    
@@ -118,18 +106,20 @@ when 'run'
 
 
     if time_now >= time_next
-      File.write(logfile, stamp(control), mode: 'a')
-      exit_code = `#{command} >> #{logfile} 2>&1; echo $?`.to_i
-      File.write(logfile, line+"\n", mode: 'a')
+      File.write(log_file, log_stamp(control), mode: 'a')
+      exit_code = `#{command} >> #{log_file} 2>&1; echo $?`.to_i
        
       if exit_code == 0
         time_stamp = "#{time_now} #{time_now}"
         fail_count = 0
+        message = ":: Exit Code: 0.\n"
       else
         time_stamp = "#{time_sucess} #{time_now}"
         fail_count += 1
+        message = ":: Exit Code: #{exit_code}. "
+        message += "Next attempt in #{delay(fail_count)/60} min.\n"
       end 
-      
+      File.write(log_file, message, mode: 'a') 
       File.write(control_file, "#{time_stamp} #{fail_count}", mode: 'w')
     end
   end
