@@ -2,22 +2,13 @@
 
 ## A simple cron job scheduler for sparsely running machines.
 
-If you have scripts which need run periodically you probably rely on 
-crontab or systemd timers. For crontab, if your machine is not
-running 24/7 which is the case of most notebooks the script may not run on
-specified time or day. Systemd timers are good alternatives but they have a more 
-involving setup. Yet, systemd despite ubiquitous is not present on
-all distros. 
+If you have scripts that need to run periodically, you might rely on tools like crontab or systemd timers. However, if your machine doesn’t run 24/7 -- as is often the case with laptops -- crontab may miss scheduled tasks if the system is off at the designated time. While systemd timers offer a more robust solution, they require a more complex setup and aren’t available on all Linux distributions.
 
-Simplecron is easy to setup, have minimal depencies (ruby and cronie) and
-just works.
+Simplecron offers an easy-to-set-up alternative with minimal dependencies (just Ruby and Cronie) and reliably handles periodic tasks.
 
 # How it works
 
-Simplecron relies on cronie (crontab) to work as it would be a service. 
-Once enabled (see Usage below), crontab will run `simplecron run` every minute
-and `simplecron` on its turn will take care of your tasks (see Setup below). 
-Simple(cron) like that :-).
+Simplecron leverages Cronie (crontab) to function as a service. Once enabled (see Usage below), crontab triggers Simplecron every minute, and Simplecron, in turn, manages your scheduled tasks (see Setup below). It’s as simple as that
 
 
 # Installation
@@ -64,10 +55,5 @@ Running `simplecron` has the same affect of running `simplecron status`.
 
 # Note
 
-Simplecron monitors the exit codes of tasks. If exit code is non-zero 
-(indicating a task failed to complete) it will retry the specific 
-task every 10 minutes for the next hour. Then (if keep failing) 
-attemps become sparser, to every 1h until successfully completion
-i.e. simplecron receives an exit code equals 0.
-
+Simplecron monitors the exit codes of tasks to handle failures intelligently. If a task returns a non-zero exit code (indicating failure), Simplecron will retry it every 10 minutes for up to an hour. If the task continues to fail, retries become less frequent, occurring every hour until it completes successfully—i.e., until Simplecron receives an exit code of 0.
 
