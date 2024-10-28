@@ -21,8 +21,11 @@ Simple(cron) like that :-).
 
 
 # Installation
+1. Install `cronie` and enable its service.
 
-Download the `simplecron` script, make it executable, and
+2. Install `ruby`.
+
+3. Download the `simplecron` script, make it executable, and
 copy it to your `PATH`.
 
 # Setup
