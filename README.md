@@ -37,7 +37,7 @@ Each line is a task (no blank lines allowed) in the format:
 task_name, period, command
 ```
 
-Note columns are separated by commas. DO NOT use `"` in `command`. `task_name`
+Note columns are separated by commas. `task_name`
 can be anything since it is just a control name for your tasks. 
 Control files (logs and records) are kept in `~/.cache/simplecron/`
 
