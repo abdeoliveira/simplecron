@@ -2,8 +2,8 @@
 # 1h = one hour
 # 1d = one day
 # 1w = one week
-# label, period, command
-restic,     	1d, /home/oliveira/.local/bin/restic-gdrive backup
-timepatrol, 	6h, sudo /usr/bin/timepatrol snapshot automatic
-clean_download,	1d, rm -rf $HOME/Downloads/*
-rsync_macmini, 	1w, /home/oliveira/.local/bin/rsync-to-macmini.sh
+# label, 	period, command
+restic,     	1d, 	$HOME/bin/restic-gdrive backup
+timepatrol, 	6h, 	sudo /usr/bin/timepatrol snapshot automatic
+clean_download,	1d, 	rm -rf $HOME/Downloads/*
+rsync_macmini, 	1w, 	$HOME/.local/bin/rsync-to-macmini.sh

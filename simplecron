@@ -8,11 +8,12 @@ config_folder = "#{home}/.config/simplecron"
 `mkdir -p #{cache_folder}`
 
 config_file = "#{config_folder}/config"
+lock_file = "/tmp/#{ENV['USER']}_simplecron.lck"
 
 require 'date'
 
 def is_enabled?
-  true if `crontab -l 2>/dev/null`.include? '/usr/bin/simplecron'
+  `crontab -l 2>/dev/null`.include? '/usr/bin/simplecron'
 end
 
 def enable_simplecron
@@ -43,10 +44,12 @@ def read_data(control_file)
 end
 
 def convert_to_seconds(period)
-  return period.delete('m').to_f * 60     if period.include?('m')
-  return period.delete('h').to_f * 3600   if period.include?('h')
-  return period.delete('d').to_f * 86400  if period.include?('d')
-  return period.delete('w').to_f * 604800 if period.include?('w')
+  value = 60 if period.to_i < 60
+  value = period.delete('m').to_i * 60     if period.include?('m')
+  value = period.delete('h').to_i * 3600   if period.include?('h')
+  value = period.delete('d').to_i * 86400  if period.include?('d')
+  value = period.delete('w').to_i * 604800 if period.include?('w')
+  return value
 end
 
 def log_stamp(job)
@@ -82,6 +85,10 @@ when 'disable'
 
 when 'run'
   exit 0 unless File.file? config_file
+
+  exit 0 if File.file? lock_file
+
+  File.new(lock_file, 'w')
   
   task_list = File.readlines(config_file)
   task_list.reject! { |l| l.include?('#') }
@@ -123,6 +130,8 @@ when 'run'
       File.write(control_file, "#{time_stamp} #{fail_count}", mode: 'w')
     end
   end
+
+  File.delete(lock_file)
 
 else
   puts "No option for simplecron: '#{option}'"

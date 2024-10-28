@@ -8,7 +8,7 @@ Simplecron offers an easy-to-set-up alternative with minimal dependencies (just 
 
 # How it works
 
-Simplecron leverages Cronie (crontab) to function as a service. Once enabled (see Usage below), crontab triggers Simplecron every minute, and Simplecron, in turn, manages your scheduled tasks (see Setup below). It’s as simple as that
+Simplecron leverages Cronie (crontab) to function as a service. Once enabled (see Usage below), crontab triggers Simplecron every minute, and Simplecron, in turn, manages your scheduled tasks (see Setup below). It’s as simple as that.
 
 
 # Installation
