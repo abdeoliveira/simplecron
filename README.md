@@ -8,7 +8,8 @@ Simplecron offers an easy-to-set-up alternative with minimal dependencies (just 
 
 # How it works
 
-Simplecron leverages Cronie (crontab) to function as a service. Once enabled (see Usage below), crontab triggers Simplecron every minute, and Simplecron, in turn, manages your scheduled tasks (see Setup below). It’s as simple as that.
+Simplecron leverages Cronie (crontab) to mimic a service functionality. 
+Once enabled (see Usage below), crontab triggers Simplecron every minute, and Simplecron, in turn, manages your scheduled tasks (see Setup below). It’s as simple as that.
 
 
 # Installation
@@ -22,7 +23,7 @@ copy it to your `PATH`.
 # Setup
 
 1. Create the file `~/.config/simplecron/config` (you will need
-to create the enclosing `simplecron` folder too). 
+to create the enclosing `simplecron` folder as well). 
 
 2. Check the shipped `config-example` in order to create yours. 
 Each line is a task (no blank lines allowed) in the format:
@@ -47,13 +48,15 @@ COMMANDS: `status`, `enable`, `disable`, and `run`.
 
 `enable` / `disable` : enable / disable `simplecron`
 
-`run`: execute all tasks from `~/.config/simplecron/config` in serial. 
-Normaly this is not intended to be used manually but through a crontab 
+`run`: execute all tasks from `~/.config/simplecron/config` serialized. 
+Normaly `run` is not intended to be used manually but through a crontab, 
 activated by the `simplecron enable` command. 
 
 Running `simplecron` has the same affect of running `simplecron status`.
 
-# Note
+# Logging and error handling
 
-Simplecron monitors the exit codes of tasks to handle failures intelligently. If a task returns a non-zero exit code (indicating failure), Simplecron will retry it every 10 minutes for up to an hour. If the task continues to fail, retries become less frequent, occurring every hour until it completes successfully—i.e., until Simplecron receives an exit code of 0.
+Logs are kept on `~/.cache/simplecron`.
+
+Simplecron monitors the exit codes of tasks to handle failures intelligently. If a task returns a non-zero exit code (indicating failure), Simplecron will retry it every 10 minutes for up to an hour. If the task continues to fail, retries become less frequent, occurring every hour until it completes successfully, i.e., until Simplecron receives an exit code of 0.
 
