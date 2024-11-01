@@ -117,18 +117,18 @@ when 'run'
 
 
     if time_now >= time_next
-      File.write(log_file, ":: STARTED: #{time_human}\n", mode: 'a')
+      File.write(log_file, ":: START: #{time_human}\n", mode: 'a')
       exit_code = `#{command} >> #{log_file} 2>&1; echo $?`.to_i
        
       if exit_code == 0
         time_stamp = "#{time_now} #{time_now}"
         fail_count = 0
-        message = ":: ENDED: #{time_human}. Exit code: 0.\n"
+        message = ":: FINISH: #{time_human}. Exit code: 0.\n"
         message += line(message)
       else
         time_stamp = "#{time_sucess} #{time_now}"
         fail_count += 1
-        message = ":: ENDED: #{time_human}. Exit code: #{exit_code}. "
+        message = ":: FINISH: #{time_human}. Exit code: #{exit_code}. "
         message += "Next attempt in #{delay(fail_count)/60} min.\n"
         message += line(message)
       end 
