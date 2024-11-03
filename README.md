@@ -4,7 +4,9 @@
 
 If you have scripts that need to run periodically, you might rely on tools like crontab or systemd timers. However, if your machine doesn’t run 24/7 -- as is often the case with laptops -- crontab may miss scheduled tasks if the system is off at the designated time. While systemd timers offer a more robust solution, they require a more complex setup and aren’t available on all Linux distributions.
 
-Simplecron offers an easy-to-set-up alternative with minimal dependencies (just Ruby and Cronie) and reliably handles periodic tasks.
+Anacron is a viable option, but it lacks the capability to monitor whether jobs have successfully completed or failed. 
+
+Simplecron, on the other hand, provides a straightforward, lightweight alternative that requires only Ruby and Cronie. It reliably manages periodic tasks and handles scheduled jobs differently based on their exit codes, distinguishing between successful and failed executions (see Logging and Error Handling).
 
 # How it works
 
@@ -54,7 +56,7 @@ activated by the `simplecron enable` command.
 
 Running `simplecron` has the same affect of running `simplecron status`.
 
-# Logging and error handling
+# Logging and Error Handling
 
 Logs are kept on `~/.cache/simplecron`.
 
