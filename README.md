@@ -6,6 +6,8 @@ If you have scripts that need to run periodically, you might rely on tools like 
 
 Anacron is a viable option, but it lacks the capability to monitor whether jobs have successfully completed or failed. 
 
+Fcron offers a wide range of features, though setting it up requires some extra time and.
+
 Simplecron, on the other hand, provides a straightforward, lightweight alternative that requires only Ruby and Cronie. It reliably manages periodic tasks and handles scheduled jobs differently based on their exit codes, distinguishing between successful and failed executions (see Logging and Error Handling).
 
 # How it works
