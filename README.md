@@ -50,7 +50,7 @@ COMMANDS: `status`, `enable`, `disable`, and `run`.
 
 `status`: Tells if simplecron is enabled or disabled.
 
-`enable` / `disable` : enable / disable `simplecron`
+`enable` / `disable` : enable / disable `simplecron` *per user*.
 
 `run`: execute all tasks from `~/.config/simplecron/config` serialized. 
 Normaly `run` is not intended to be used manually but through a crontab, 
