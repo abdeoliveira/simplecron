@@ -38,7 +38,6 @@ task_name, period, command
 
 Note columns are separated by commas. `task_name`
 can be anything since it is just a control name for your tasks. 
-Control files (logs and records) are kept in `~/.cache/simplecron/`
 
 3. Lines -- whole lines -- containing hashtags (`#`) anywehre are ignored. 
 
