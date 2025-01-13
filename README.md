@@ -63,3 +63,10 @@ Logs are kept on `~/.cache/simplecron`.
 
 Simplecron monitors the exit codes of tasks to handle failures intelligently. If a task returns a non-zero exit code (indicating failure), Simplecron will retry it every 10 minutes for up to an hour. If the task continues to fail, retries become less frequent, occurring every hour until it completes successfully, i.e., until Simplecron receives an exit code of 0.
 
+# TODO
+
+Implement two different 'elapsed times': clock and uptime. 
+
+* Clock is currently implemented, which takes time intervals from `date` command.
+
+* Uptime will take elapsed times from `Process.clock_gettime(Process::CLOCK_MONOTONIC)`, which mesures the cumulative uptime in seconds *minus* the sleep time.
