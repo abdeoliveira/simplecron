@@ -30,16 +30,23 @@ copy it to your `PATH`.
 to create the enclosing `simplecron` folder as well). 
 
 2. Check the shipped `config-example` in order to create yours. 
-Each line is a task (no blank lines allowed) in the format:
+Each line is a job (no blank lines allowed) in the format:
 
 ```
-task_name, period, command
+task, period, mode, command
 ```
 
-Note columns are separated by commas. `task_name`
-can be anything since it is just a control name for your tasks. 
+Note columns are separated by commas. 
 
-3. Lines -- whole lines -- containing hashtags (`#`) anywehre are ignored. 
+`task` can be anything since it is just a control name for your jobs. 
+`period` is self-explanatory, `mode` determines the way elapsed time is 
+computed. There are two possibilities: `clock` and `uptime`. The former
+uses the time as given by the `date` command (which should match the
+actual time) while the latter accounts the time in which the computer was
+actually running (thus speep times are not taken into account).
+Then `command` is any command suitable for your system. 
+
+3. Lines containing hashtags (`#`) **anywehre** are ignored. 
 
 # Usage
 
@@ -62,11 +69,3 @@ Running `simplecron` has the same affect of running `simplecron status`.
 Logs are kept on `~/.cache/simplecron`.
 
 Simplecron monitors the exit codes of tasks to handle failures intelligently. If a task returns a non-zero exit code (indicating failure), Simplecron will retry it every 10 minutes for up to an hour. If the task continues to fail, retries become less frequent, occurring every hour until it completes successfully, i.e., until Simplecron receives an exit code of 0.
-
-# TODO
-
-Implement two different 'elapsed times': clock and uptime. 
-
-* Clock is currently implemented, which takes time intervals from `date` command.
-
-* Uptime will take elapsed times from `Process.clock_gettime(Process::CLOCK_MONOTONIC)`, which mesures the cumulative uptime in seconds *minus* the sleep time.

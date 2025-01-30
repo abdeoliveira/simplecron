@@ -31,16 +31,12 @@ def disable_simplecron
   `#{setup} > /dev/null`
 end
 
-def time_now
-  DateTime.now.strftime('%s').to_i
-end
-
 def read_data(control_file)
-  time_sucess = 0
+  time_success = 0
   time_try = 0
   fail_count = 0
-  time_sucess, time_try, fail_count = File.read(control_file).split if File.file? control_file
-  return time_sucess.to_i, time_try.to_i, fail_count.to_i
+  time_success, time_try, fail_count = File.read(control_file).split if File.file? control_file
+  return time_success.to_i, time_try.to_i, fail_count.to_i
 end
 
 def convert_to_seconds(period)
@@ -64,6 +60,12 @@ end
 
 def line(message)
   '-' * (message.length - 1) + "\n"
+end
+
+def is_correct?(mode)
+  value = false
+  value = true if mode == 'clock' or mode == 'uptime'
+  return value
 end
 
 option = ARGV[0]
@@ -100,21 +102,29 @@ when 'run'
   task_list.each do |l|
     job = l.split(',')
     
-    command = job[2].strip
+    command = job[3].strip
+    mode = job[2].strip
     period = convert_to_seconds(job[1])
-    control = job[0].strip 
+    control = job[0].strip
 
-    control_file = "#{cache_folder}/#{control}.rec"
+    abort "Error in config file: field 'mode'." unless is_correct?(mode)
+    
+    time_now = DateTime.now.strftime('%s').to_i if mode == 'clock'
+    time_now = Process.clock_gettime(Process::CLOCK_MONOTONIC) if mode == 'uptime'
+
+    control_file = "#{cache_folder}/#{control}.#{mode}"
     log_file = "#{cache_folder}/#{control}.log"
 
-    time_sucess, time_try, fail_count = read_data(control_file)
+    time_success, time_try, fail_count = read_data(control_file)
    
     if fail_count == 0 
-      time_next = time_sucess + period
+      time_next = time_success + period
     else
       time_next = time_try + delay(fail_count)
     end
 
+    time_next = 300 if time_now < time_success # if 'mode = uptime' and after boot.
+    time_next = 0   if time_try == 0 # if 'mode = uptime' and '.uptime' file absent.
 
     if time_now >= time_next
       File.write(log_file, ":: START: #{time_human}\n", mode: 'a')
@@ -126,7 +136,7 @@ when 'run'
         message = ":: FINISH: #{time_human}. Exit code: 0.\n"
         message += line(message)
       else
-        time_stamp = "#{time_sucess} #{time_now}"
+        time_stamp = "#{time_success} #{time_now}"
         fail_count += 1
         message = ":: FINISH: #{time_human}. Exit code: #{exit_code}. "
         message += "Next attempt in #{delay(fail_count)/60} min.\n"
