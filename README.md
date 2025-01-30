@@ -43,7 +43,7 @@ Note columns are separated by commas.
 computed. There are two possibilities: `clock` and `uptime`. The former
 uses the time as given by the `date` command (which should match the
 actual time) while the latter accounts the time in which the computer was
-actually running (thus speep times are not taken into account).
+actually running (sleep times are not taken into account).
 Then `command` is any command suitable for your system. 
 
 3. Lines containing hashtags (`#`) **anywehre** are ignored. 
