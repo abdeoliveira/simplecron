@@ -110,7 +110,7 @@ when 'run'
     abort "Error in config file: field 'mode'." unless is_correct?(mode)
     
     time_now = DateTime.now.strftime('%s').to_i if mode == 'clock'
-    time_now = Process.clock_gettime(Process::CLOCK_MONOTONIC) if mode == 'uptime'
+    time_now = Process.clock_gettime(Process::CLOCK_MONOTONIC).to_i if mode == 'uptime'
 
     control_file = "#{cache_folder}/#{control}.#{mode}"
     log_file = "#{cache_folder}/#{control}.log"

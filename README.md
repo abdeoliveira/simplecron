@@ -39,12 +39,13 @@ task, period, mode, command
 Note columns are separated by commas. 
 
 `task` can be anything since it is just a control name for your jobs. 
-`period` is self-explanatory, `mode` determines the way elapsed time is 
+`period` is the time interval between runs of the job (see `config-example`), 
+`mode` determines the way elapsed time is 
 computed. There are two possibilities: `clock` and `uptime`. The former
 uses the time as given by the `date` command (which should match the
 actual time) while the latter accounts the time in which the computer was
-actually running (sleep times are not taken into account).
-Then `command` is any command suitable for your system. 
+actually running, i.e. without taking into account sleep time.
+`command` is any command suitable for your system. 
 
 3. Lines containing hashtags (`#`) **anywehre** are ignored. 
 
