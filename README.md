@@ -36,18 +36,20 @@ Each line is a job (no blank lines allowed) in the format:
 task, period, mode, command
 ```
 
-Note columns are separated by commas. 
+`task` is simply a control name for your jobs and can be any value.
 
-`task` can be anything since it is just a control name for your jobs. 
-`period` is the time interval between runs of the job (see `config-example`), 
-`mode` determines the way elapsed time is 
-computed. There are two possibilities: `clock` and `uptime`. The former
-uses the time as given by the `date` command (which should match the
-actual time) while the latter accounts the time in which the computer was
-actually running, i.e. without taking into account sleep time.
-`command` is any command suitable for your system. 
+`period` specifies the interval between job executions (refer to `config-example`).
+
+`mode` defines how elapsed time is calculated, with two options: `clock` and `uptime`.
+
+* `clock` uses the system time from the `date` command, which reflects the actual time.
+
+* `uptime` measures only the time the computer was actively running, excluding sleep periods.
+
+`command` is any valid system command that your environment supports.
 
 3. Lines containing hashtags (`#`) **anywehre** are ignored. 
+
 
 # Usage
 
